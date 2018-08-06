@@ -1,6 +1,6 @@
 {
-  "name": "cryptopro-pdf-sign-in-browser-with-vuejs",
-  "description": "КриптоПро ЭЦП Browser plug-in предназначен для создания и проверки электронной подписи (ЭП) на веб-страницах с использованием СКЗИ \"КриптоПро CSP\"",
+  "name": "photos-fetch-to-flex-table",
+  "description": "Получаю фото из БД",
   "version": "1.0.0",
   "author": "Kostia7ALANia <osetia-alania@mail.ru>",
   "license": "MIT",
@@ -11,12 +11,17 @@
     "build2": "cross-env NODE_ENV=development webpack --progress --hide-modules"
   },
   "dependencies": {
+    "animated-number-vue": "^0.1.3",
+    "axios": "^0.18.0",
     "es6-promise": "^4.2.4",
     "lodash": "^4.17.10",
-    "npm": "^6.1.0",
+    "npm": "^6.2.0",
     "v-mask": "^1.3.2",
+    "v-viewer": "^1.1.0",
     "vue": "^2.5.11",
+    "vue-masonry-css": "^1.0.2",
     "vue-select": "^2.4.0",
+    "vue2-animate": "^2.0.0",
     "whatwg-fetch": "^2.0.4"
   },
   "browserslist": [
@@ -35,8 +40,8 @@
     "css-loader": "^0.28.7",
     "es6-promise-promise": "^1.0.0",
     "file-loader": "^1.1.4",
-    "node-sass": "^4.5.3",
-    "sass-loader": "^6.0.6",
+    "node-sass": "^4.9.2",
+    "sass-loader": "^6.0.7",
     "vue-loader": "^13.0.5",
     "vue-template-compiler": "^2.4.4",
     "webpack": "^3.6.0",
