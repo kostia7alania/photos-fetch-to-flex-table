@@ -1,16 +1,25 @@
 <template>
   <div class="  color_white v-viewer-pos bg-darkblue">
-     <div v-viewer="{ movable: true,  url: 'data-original'}" @inited="e=>console.log('inited1')" class="viewer" ref="viewer">
-          <transition v-if="def.FileName=='' || def.FileName.length<1 "  name="modal">NO PHOTOS!!</transition>
+     <div v-viewer="{ movable: true,  url: 'data-original'}" @inited="e=>console.log('inited1')" class="viewer-def" ref="viewer">
+          <transition v-if="def.File=='' || def.File.length<1 "  name="modal">NO PHOTOS!!</transition>
           <transition-group v-else>
-            <div v-for="(src,i) in def.FileName" :key="i"> 
-              <img :data-original="'https://apcis.tmou.org/pictures/real/'+src"
-                :alt="`<div><b>#</b> ${i+1}</div>`"
-                :src="'https://apcis.tmou.org/pictures/small/'+src"
-                data-color="#eee" data-text="Small quality image"
-                style="max-width: 100%" 
-              /><p><span class="strong">#</span> {{i+1}}</p>
-        </div>
+            <div v-for="(file,i) in def.File" class="tbl-def-imgs-wrapper color_white" :key="i"> 
+              <div class="tbl-def-imgs">
+                <img :data-original="'https://apcis.tmou.org/pictures/real/'+file.src"
+                  :alt="`<div><b>#</b> ${i+1}</div>`"
+                  :src="'https://apcis.tmou.org/pictures/small/'+file.src"
+                  {{
+                     data-color="#eee" data-text="Small quality image"
+                  }}
+                  style="max-width: 100%" 
+                />
+              </div>
+              <div class="tbl-def-imgs">
+                <p>Date: {{new Date (file.date).toLocaleDateString('RU')}}</p>
+                <p v-if="file.Comments.trim().length>0">Comments: {{file.Comments}}</p>
+              </div>
+          </div>
+
       </transition-group> 
     </div>
   </div>

@@ -6,9 +6,9 @@
           <h1 v-if="inspAttrs.status==0" :key="'key2'">Loading......</h1> 
           <h1 v-if="inspAttrs.status == 1 && inspections.length == 0" :key="'key3'">Nothing found in the filter of inspections!</h1>
           <div v-if="inspAttrs.status == 1 && inspections.length > 0" :key="'key4'"> 
-          <app-table-insp-row v-for="(insp,ind) in orderedInspections" v-bind:key="ind"
-                  :decode="decode" :Page="Page" :perPage="perPage"  :url="url" :insp="insp" :ind="ind"
-          ></app-table-insp-row>
+
+            <app-table-insp-row :inspections="inspections" :decode="decode" :url="url"  :Page='Page' :perPage='perPage'></app-table-insp-row>
+
           </div>
           <h1 v-if="inspAttrs.status == 2" :key="'key7'">Error while searching inspections!</h1>
       </transition-group>
@@ -26,7 +26,6 @@ export default {
     perPageEmit(e){this.$emit('perPageEmit',e)},
     navClick(e){   this.$emit('navClick',   e)}
   },
-  mounted: function () {},
-  computed: { orderedInspections: function(){ return  _.orderBy(this.inspections,'Row');  } }
+  mounted: function () {}
 }
 </script> 

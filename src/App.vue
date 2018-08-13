@@ -48,8 +48,17 @@ export default {
                 return {
                     "Group":atr['Group'],
                     "Name":atr['Name'],
+                    "Comments":atr['Comments'], 
                     "Found":atr['Found'],
-                    "FileName": rec.length>0?rec.map(ee=>ee['@attributes']['FileName']):'' }
+                    "File": 
+                      rec.length>0 ?
+                        rec.map(ee=>{return {
+                                          "src": ee['@attributes']['FileName'],
+                                          "Comments": ee['@attributes']['Comments'],
+                                          "date": ee['@attributes']['date']
+                                    }}
+                        )
+                      :'' }
               }).filter(e=>e.Group == this.data.def_nature || this.data.def_nature == 0);
       },
       Found:  function(){ return this.inspAttrs.Found },
@@ -126,14 +135,14 @@ export default {
       searchHandler(dat, searchby = this.data.searchby) {
        console.log('searchHandler(dat)', dat, typeof dat, this)  
         if( typeof  dat == 'object' ){ //пришел норм ответ (объект)
-          if(searchby=='insp'){            
+          if(searchby=='insp'){
             this.inspAttrs.Found = parseInt(dat["@attributes"].Found);
             this.inspAttrs.Page  = parseInt(dat["@attributes"].Page);
             if(this.Found==0){this.inspections = [];}
             else this.inspections = this.Found==1 ? [this.insps_parse_tranform( dat.Inspection )] : dat.Inspection.map( ee => this.insps_parse_tranform( ee ) )
           } else {//def
             this.clonedDifData = this.data;
-            this.deficiencies = dat;  
+            this.deficiencies = dat;
           } 
           this.changeStatus(1, searchby); //ready
         } else {// пришла ошибка
@@ -147,7 +156,6 @@ export default {
 <style lang="scss">
 @import './styles/styles_table.scss';
 @mixin pnt(){ color: white; background: red; cursor: pointer; }
-
  
 .marg0{ margin: 0px; }
 .oddk {background-color: #24638a;
@@ -158,20 +166,16 @@ export default {
   background-color: #4d7b9c;
   &:hover{@include pnt();} 
   &>*{color: white !important;};
-}
+} 
 
-
-
-/* Анимации появления и исчезновения могут иметь */
+/* Анимации появления и исчезновения могут иметь */ 
 /* различные продолжительности и динамику.       */
 .slide-fade-enter-active {   transition: all .3s ease;  }
 .slide-fade-leave-active {   transition: all .3s cubic-bezier(1.0, 0.5, 0.8, 1.0);  }
 .slide-fade-enter, .slide-fade-leave-to /* .slide-fade-leave-active до версии 2.1.8 */ { transform: translateX(10px); opacity: 0; } 
 
- .shiftx-enter-active, .shiftx-leave-active {  transition: all 2s ease-in-out;   } 
- .shiftx-enter, .shiftx-leave-to        /* .fade-leave-active below version 2.1.8 */   { transform: translateX(100px); }
-
-
+.shiftx-enter-active, .shiftx-leave-active {  transition: all 2s ease-in-out;   } 
+.shiftx-enter, .shiftx-leave-to        /* .fade-leave-active below version 2.1.8 */   { transform: translateX(100px); } 
 </style>
  
  
