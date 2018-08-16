@@ -1,45 +1,53 @@
 @mixin flx(){  display: flex; display: -webkit-flex; }
-
+@mixin imgs(){
+  & img {
+    padding-bottom: 7px;
+    padding-top: 7px;
+    -moz-transition: all 1s ease-out;
+    -o-transition: all 1s ease-out;
+    -webkit-transition: all 1s ease-out;
+    height: 222px;
+    width: 222px;
+    &:hover { 
+      cursor: pointer;
+      -webkit-transform: scale(1.1);
+      -moz-transform: scale(1.1);
+      -o-transform: scale(1.1);
+    }
+  }
+}
 .table-head {
   background-color: #004673;
   &>*{ color: whitesmoke; }
 }
 .bg-darkblue {  background: #244c8a; }
-
-.viewer-def > span {
+.center{text-align: center;}
+/*.viewer-def > span {
   @include flx();
   justify-content: flex-start;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
   &:hover {cursor: unset;}
-  &>div.tbl-def-imgs-wrapper { 
+  &.table-def-row-col { 
       @include flx();
       align-self: flex-start;
       flex-direction: column;
-      width: 300px;
-      text-align: center;
-      padding: 10px;
-      &>.tbl-def-imgs {
-        align-self: center;
-        &>img {
-          padding: 10px;
-          -moz-transition: all 1s ease-out;
-          -o-transition: all 1s ease-out;
-          -webkit-transition: all 1s ease-out;
-          height: 222px;
-          width: 222px;
-          &:hover { 
-            cursor: pointer;
-            -webkit-transform: scale(1.1);
-            -moz-transform: scale(1.1);
-            -o-transform: scale(1.1);
-          }
-        }
-      }
+      width: 300px; 
+      padding: 10px; 
    }
-}
+}*/
+.table-def-row-col-head{min-height: 33px}
+.table-def-row-col { &:hover{background: #cd0a0a;  }}
 
+.def-imgs {
+  @include imgs();
+  & img { 
+    height: 100%;
+    max-width: 111px;
+  }
+  padding: 3px;
+}
 .viewer-insp { 
   @include flx();
   justify-content: space-evenly;
@@ -50,20 +58,8 @@
   &:hover {cursor: unset;}
   &>.viewer-insp-row {
     margin: 1px;
-    width: 333px;
-     & img {
-        -moz-transition: all 1s ease-out;
-       -o-transition: all 1s ease-out;
-       -webkit-transition: all 1s ease-out;
-       height: 222px;
-       width: 222px;
-       &:hover { 
-         cursor: pointer;
-         -webkit-transform: scale(1.1);
-         -moz-transform: scale(1.1);
-         -o-transform: scale(1.1);
-       }
-     }
+    width: 333px; 
+      @include imgs();  
    }
 }
 .viewer-title {    
@@ -100,7 +96,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;   
-  min-height: 33px; 
+  /*min-height: 33px; */
      & > div {
       /*width:100%;*/
       height: auto;

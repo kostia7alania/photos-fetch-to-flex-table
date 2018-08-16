@@ -2,14 +2,14 @@
           <div>
             <div class="row_head" :class="{oddk:ind%2, evenk:!(ind%2)}" @click="showModal=!showModal" key="'k1'" >
               <div class="grow0">{{ind+1}}</div>
-              <div class="grow2">{{ codeGroupViewHandler( def.Group ) }}</div>
-              <div class="grow3">{{def.Name}}</div>
-              <div class="grow1">{{def.Found}}</div>
-              <div class="grow1">{{def.File.length}}</div>
+              <div class="grow2">{{ codeGroupViewHandler( def[0].Group ) }}</div>
+              <div class="grow3">{{def[0].Name}}</div>
+              <div class="grow1">{{def[0].Defs}}</div>
+              <div class="grow1">{{def[0].Photos}}</div>
             </div>  
               <template v-if="showModal">
-                <app-table-def-row-col-image v-show="def.File.length>0" :def="def" :ind="ind" :data="data" :url="url" @click="showModal=!showModal" key="'k2'">  </app-table-def-row-col-image> 
-                <h1 v-show="def.File.length==0"> No photos!</h1>
+                <app-table-def-row-col-image v-show="def[0].Photos>0" :group="def[0].Group" :ind="ind" :data="data" :url="url" @click="showModal=!showModal" key="'k2'">  </app-table-def-row-col-image> 
+                <h1 v-show="def[0].Photos==0">No photos!</h1>
               </template>
           </div>
 

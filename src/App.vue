@@ -1,19 +1,20 @@
 <template>
   <div class="scobki" id="app">
-    <app-panel :url="url" :decode="decode" :Page="Page" :inspAttrs="inspAttrs" :defAttrs="defAttrs"
+    <app-panel :url="url" :decode="decode" :Page="inspAttrs.Page" :inspAttrs="inspAttrs" :defAttrs="defAttrs"
                :perPage="perPage" @searchFromPanel="searchFromPanel" @upSendData="getSentData"></app-panel>
     <app-table 
       :data="data" :clonedDifData="clonedDifData"
       :decode='decode'
       :inspAttrs="inspAttrs" :defAttrs="defAttrs"
       :url="url" 
-      :deficiencies="filteredDeficiencies"
+      :defsTable="defsTable"
       :inspections="inspections" 
-      :Found="Found" :Page="Page" :perPage="perPage" 
+      :Found="inspAttrs.Found" :Page="inspAttrs.Page" :perPage="perPage" 
       @navClick="navClick" @perPageEmit="perPageEmit"
     ></app-table> 
   </div>
 </template>
+
 <script>  
   import 'viewerjs/dist/viewer.css'
   import Viewer from 'v-viewer'
@@ -32,7 +33,7 @@ export default {
       return {
         showModal:    false,
         inspections:  [],
-        deficiencies: [], //изменить!
+        defsTable: [], //изменить!
         decode:       [],
         inspAttrs:    {Found:0,Page:0,status:-1},//-1 - indicates that we have not searched yet!; 0 - loading; 1 - ready; 2-err
         defAttrs:     {Found:0,Page:0,status:-1},//-1 - indicates that we have not searched yet!; 0 - loading; 1 - ready; 2-err
@@ -42,28 +43,7 @@ export default {
         data:         {searchby:'insp', def_nature:0} //заполняется динамически;
       }
     },
-    computed: {
-      filteredDeficiencies: function(){
-            return this.deficiencies.map(e=>{let atr = e[0]['@attributes'], rec = e[0]['Record'];
-                return {
-                    "Group":atr['Group'],
-                    "Name":atr['Name'],
-                    "Comments":atr['Comments'], 
-                    "Found":atr['Found'],
-                    "File": 
-                      rec.length>0 ?
-                        rec.map(ee=>{return {
-                                          "src": ee['@attributes']['FileName'],
-                                          "Comments": ee['@attributes']['Comments'],
-                                          "date": ee['@attributes']['date']
-                                    }}
-                        )
-                      :'' }
-              }).filter(e=>e.Group == this.data.def_nature || this.data.def_nature == 0);
-      },
-      Found:  function(){ return this.inspAttrs.Found },
-      Page:   function(){ return this.inspAttrs.Page  }
-    },
+    computed: { },
     beforeMount(){console.log('before moiunt')},
     mounted() {
       axios.post(this.url+"GetCodesAll=1")
@@ -105,14 +85,13 @@ export default {
       changeStatus(e, searchby = this.data.searchby){
         if(searchby=='insp') { this.inspAttrs.status=e; if(e==2) this.inspections=[]; // чистим деф или инсп при ошибке;
         }
-        if(searchby=='def') { this.defAttrs.status=e; if(e==2) this.deficiencies=[];  // чистим деф или инсп при ошибке;
+        if(searchby=='def') { this.defAttrs.status=e; if(e==2) this.defsTable=[];  // чистим деф или инсп при ошибке;
         }
       },
       onclick_insps_search_photos () {  
         window.data=this.data;          console.log('onclick_insps_search_photos() => ', data);
-        this.changeStatus(0);
-        let searchby = this.data.searchby;
-        axios.post(`${this.url}`, qs.stringify(this.data)).then( res => this.searchHandler(res.data, searchby) );
+        this.changeStatus(0); 
+        axios.post(`${this.url}`, qs.stringify(this.data)).then( res => this.searchHandler(res.data, this.data.searchby) );// searchby - передаю для параллельного поиска (до завершения запроса и началом его обработкой юзер может переключить режим insp/def;;;
       },
       insps_parse_tranform(w){
             try{
@@ -138,11 +117,11 @@ export default {
           if(searchby=='insp'){
             this.inspAttrs.Found = parseInt(dat["@attributes"].Found);
             this.inspAttrs.Page  = parseInt(dat["@attributes"].Page);
-            if(this.Found==0){this.inspections = [];}
-            else this.inspections = this.Found==1 ? [this.insps_parse_tranform( dat.Inspection )] : dat.Inspection.map( ee => this.insps_parse_tranform( ee ) )
+            if(this.inspAttrs.Found==0){this.inspections = [];}
+            else this.inspections = this.inspAttrs.Found==1 ? [this.insps_parse_tranform( dat.Inspection )] : dat.Inspection.map( ee => this.insps_parse_tranform( ee ) )
           } else {//def
             this.clonedDifData = this.data;
-            this.deficiencies = dat;
+            this.defsTable = dat;
           } 
           this.changeStatus(1, searchby); //ready
         } else {// пришла ошибка

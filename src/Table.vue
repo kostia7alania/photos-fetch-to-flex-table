@@ -9,7 +9,7 @@
           </div>
 
           <div v-if="data.searchby=='def' && defAttrs.status>-1" :key="'key_def'">
-            <app-table-def :data="clonedDifData" :decode="decode" :defAttrs="defAttrs" :url="url" :deficiencies="deficiencies"></app-table-def> 
+            <app-table-def :data="clonedDifData" :decode="decode" :defAttrs="defAttrs" :url="url" :defsTable="defsTable"></app-table-def> 
           </div> 
 
         </transition-group>
@@ -26,7 +26,7 @@ import tableDef from "./tableDef.vue";
 
 export default {
   components: {  'app-table-insp': tableInsp ,'app-table-def': tableDef},
-  props: ['url', 'inspections', 'Found', 'Page', 'perPage', 'data', 'clonedDifData','deficiencies', 'inspAttrs', 'defAttrs', 'decode'],
+  props: ['url', 'inspections', 'Found', 'Page', 'perPage', 'data', 'clonedDifData','defsTable', 'inspAttrs', 'defAttrs', 'decode'],
   data(){ return { } },
   methods:{
     perPageEmit(e){this.$emit('perPageEmit',e)},

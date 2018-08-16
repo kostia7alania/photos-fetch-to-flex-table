@@ -5,7 +5,7 @@
       <div v-else :key="'key2'">  
         <h1>Deficiencies</h1>
         <h1 v-if="defAttrs.status==0">Loading......</h1> 
-        <app-table-def-row v-if="defAttrs.status==1" :decode="decode" :deficiencies="deficiencies" :url="url" :data="data"></app-table-def-row> 
+        <app-table-def-row v-if="defAttrs.status==1" :decode="decode" :defsTable="defsTable" :url="url" :data="data"></app-table-def-row> 
         <h1 v-if="defAttrs.status==2">Error while performing the search......</h1> 
       </div>
 
@@ -17,16 +17,11 @@
 import tableDefRow from "./tableDefRow.vue";  
 export default {
   components: {'app-table-def-row': tableDefRow},
-  props: ['decode', 'url', 'deficiencies', 'defAttrs', 'data'],
+  props: ['decode', 'url', 'defsTable', 'defAttrs', 'data'],
   data(){ return { } },
   methods:{ },
   computed: {
-    defLength(){
-      if(typeof deficiencies=='undefined'){return 0}
-      else {
-        return deficiencies.length>0?1:0
-      }
-    }
+    defLength(){return typeof this.defsTable == 'undefined' || this.defsTable.length==0?1:0;}
   },
   mounted: function () {} 
 }
