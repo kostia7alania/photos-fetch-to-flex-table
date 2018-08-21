@@ -1,73 +1,82 @@
-<template> 
-  <div> 
-      <table class="panel my_vue_table">
-        <transition-group name="bounce" tag="tr">
-          <!--<td><label>New interface:</label><input type="checkbox" id="horns" name="feature" value="horns" /></td>-->   
-          <td :key="'k1'">  
-            <label>Search by:</label> 
-            <section class="whitesmoke">
-                  <span class="searchby" @click="searchby_click"><input name="searchby" type="radio" @change="upSendData" v-model.trim="searchby" value="insp"> Inspections</input></span><br>
-                  <span class="searchby" @click="searchby_click"><input name="searchby" type="radio" @change="upSendData" v-model.trim="searchby" value="def"> Deficiency</input></span>
-            </section> 
-          </td >  
-            <td :key="'k2'" v-if=" searchby=='def' ">  <label>Deficiency nature:</label>
+<template>  
+  <div class="panelContainer">
+    <transition-group name="bounce" tag="div" class="panelContainerRow">
+          <div class="searchBy" :key="'k1'">
+            <fieldset> 
+              <legend><label>Search by:</label></legend>
+              <label><input type="radio"  @change="upSendData" v-model.trim="searchby" name="coffee" value="insp">Inspections</label>
+              <label><input type="radio"  @change="upSendData" v-model.trim="searchby" name="coffee" value="def">Deficiency</label>
+            </fieldset>
+          </div>
+          <!--<div class="defNature" :key="'k2'" v-if="searchby=='def'">  
+                <label>Deficiency nature:</label>
                 <select  v-model="def_nature"  @change="upSendData" class="input_select"  style="width:130px;">
                   <option value="0" selected="selected">-- select --</option>  
                   <option v-for="(def,ind) in def_nature_obj" :key="ind" :value="def.val">{{def.val>0 && def.val<100?`0${def.val}00`:`${def.val}00`}} - {{def.txt}}</option> 
                 </select> 
-            </td>  
-          <td :key="'k3'"><label>From:</label> <input class="input_select calend" name="From"  v-model="search_from"  style="width: 60px;" v-mask="'##.##.####'"/></td>
-          <td :key="'k4'"><label>To:</label> <input class="input_select calend" name="Till" v-model="search_till" style="width: 60px;"  v-mask="'##.##.####'"/></td>
+          </div>-->
+          <div class="searchFrom" :key="'k3'">
+            <label>From:</label>
+            <input class="input_select calend" name="From"  v-model="search_from"  style="width: 60px;" v-mask="'##.##.####'"/>
+          </div>
+          <div class="searchTill" :key="'k4'">
+            <label>To:</label>
+            <input class="input_select calend" name="Till" v-model="search_till" style="width: 60px;"  v-mask="'##.##.####'"/>
+          </div>
 
-          <td :key="'k5'"><label>Authority:</label> 
-            <select  class="input_select" name="authorityall" v-model="authoritySel" @change="authSelHandler" style="width:130px;">
+          <div class="authoritySel" :key="'k5'">
+            <label>Authority:</label> 
+            <select v-model="authoritySel" class="input_select" name="authorityall"  @change="authSelHandler" style="width:130px;">
               <option value="0" selected="true">-- select --</option>  
               <option v-for="(auth,ind) in authorityAll" :key="ind" :value="auth.auth_val">{{auth.auth}}</option>
             </select> 
-          </td>  
-          <td  :key="'k6'" v-if="searchby=='insp'"><label>District:</label> 
-            <select  class="input_select" name="district" v-model="districtSel" style="width:110px;">
+          </div>  
+          <div class="districtSel" v-if="searchby=='insp'" :key="'k6'" >
+            <label>District:</label> 
+            <select v-model="districtSel" class="input_select" name="district" style="width:110px;">
               <option value="0" selected="selected">-- select --</option>  
               <option v-for="distr in districtAll" :key="distr.distr_val" :value="distr.distr_val">{{distr.distr}}</option>
             </select> 
-          </td>   
+          </div>   
 <!--  old STYLE of input=> --> 
-        <td  :key="'k7'" v-if="searchby=='insp'"><label>Port:</label>  
-              <select  class="input_select" name="port" v-model="portSel" @change="portSelHandler" style="width:110px;">
+        <div class="portSel" v-if="searchby=='insp'" :key="'k7'">
+          <label>Port:</label>  
+          <select  class="input_select" name="port" v-model="portSel" @change="portSelHandler" style="width:110px;">
                 <option value="0" selected="selected">-- select --</option> 
                 <option v-for="(port,ind) in portAll" :key="ind" :class="port.port_class" :value="port.port_val">{{port.port}}</option>
-              </select> 
-        </td>   
+          </select> 
+        </div>   
 <!-- => new style: =>
           <td style="overflow: initial;"><label>Port:</label> 
             <v-select :placeholder="'-- select --'" :on-change="portSelHandler2" :searchable="true" :options="portAll" label="port"></v-select> 
           </td>  
 -->
-          <td  v-if=" searchby=='insp' " :key="'k8'"><label>Type:</label> 
-            <select  class="input_select" v-model="typeSel" style="width:50px;">
+          <div class="typeSel" v-if=" searchby=='insp' " :key="'k8'">
+            <label>Type:</label> 
+            <select v-model="typeSel" class="input_select" style="width:50px;">
               <option v-for="(typ,ind) in typeAll" :key="ind" :value="typ.val">{{typ.type}}</option>
             </select>
-          </td>           
-          <td :key="'k9'"><label>Show:</label> 
-            <select  class="input_select" v-model="heldSel" style="width:80px;">
+          </div>           
+          <div class="heldSel" :key="'k9'">
+            <label>Show:</label> 
+            <select v-model="heldSel" class="input_select" style="width:80px;">
               <option v-for="(hel,ind) in heldAllComp" :key="ind" :value="hel.val">{{hel.type}}</option>
             </select>
-          </td> 
+          </div> 
            
-          <td  :key="'k10'" v-if="searchby=='insp'">
-              <div class="field det my_padding">
-                  <input type="checkbox" :value="true" v-model="detentionSel"><span class="whitesmoke">Detention</span></input>
-              </div>
-            </td> 
+          <div class="detentionSel" :key="'k10'" v-if="searchby=='insp'">
+            <input type="checkbox" v-model="detentionSel" id="detentionSel" >
+            <label for="detentionSel">Detention</label> 
+          </div> 
            
-          <td :key="'k11'"><div class="my_padding"><button class="button is-warning" @click="searchFromPanel('search')"> {{searchBtnText}}</button></div></td>
-          <td :key="'k12'"><div class="my_padding"><button class="button is-warning" @click="searchFromPanel('excel')" title="Export to Excel"> To Excel</button></div></td>
-          <td :key="'k13'"><div class="my_padding"><button class="button is-warning" @click="searchFromPanel('cancel')" title="Cancel request">  Stop</button></div></td>
- 
-        </transition-group>
-      </table>   
- 
-</div>
+          <div class="searchBtn" :key="'k11'">
+            <button class="button is-warning" @click="searchFromPanel('search')"> {{searchBtnText}}</button>
+            <button class="button is-warning" @click="searchFromPanel('cancel')" title="Cancel request">  Stop</button>
+            <button class="button is-warning" @click="searchFromPanel('excel')" title="Export to Excel"> To Excel</button>
+          </div> 
+           
+    </transition-group> 
+  </div>
 </template>
 <script> 
 //import vSelect from 'vue-select'; 
@@ -98,12 +107,6 @@ export default {
     }
   },
   methods: {
-    searchby_click(e){
-      let a = e.target.querySelector('input');
-      a=a==null?e.target:a;
-      this.searchby = a.value;
-      this.upSendData(); 
-},
     upSendData(e){  
       console.log('upSendData(e)=>'+e);
       let excel = arguments.length>0 && arguments[0]=='excel'?1:0;
@@ -262,9 +265,17 @@ export default {
   mounted: function () {
     this.search_from = `${	String(new Date().getDate()).length==1?0+""+new Date().getDate():new Date().getDate()}.${	String  (new Date().getMonth()).length==1?0+""+new Date().getMonth():new Date().getMonth()}.${new Date().getFullYear()}`;
     this.search_till = `${	String(new Date().getDate()).length==1?0+""+new Date().getDate():new Date().getDate()}.${	String( (new Date().getMonth()+1) ).length==1?0+""+(new Date().getMonth()+1):new Date().getMonth()+1}.${new Date().getFullYear()}`;;
-    $('.calend').each( function ( ) { $(this).datepicker() })/*$('#getinspections button').button( )*/
-    $('.calend').datepicker({onSelect: function(d,i){if(d !== i.lastVal){$(this).change();}}  });
-    $('.calend').change( e=>{
+    //$('.calend').each( function ( ) { $(this).datepicker() })/*$('#getinspections button').button( )*/
+  //  $('.calend').datepicker({onSelect: function(d,i){if(d !== i.lastVal){$(this).change();}}  });
+  var pic = 'data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMS4xLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDMyIDMyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAzMiAzMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSIyNHB4IiBoZWlnaHQ9IjI0cHgiPgo8Zz4KCTxnIGlkPSJjYWxlbmRhcl8xXyI+CgkJPHBhdGggZD0iTTI5LjMzNCwzSDI1VjFjMC0wLjU1My0wLjQ0Ny0xLTEtMXMtMSwwLjQ0Ny0xLDF2MmgtNlYxYzAtMC41NTMtMC40NDgtMS0xLTFzLTEsMC40NDctMSwxdjJIOVYxICAgIGMwLTAuNTUzLTAuNDQ4LTEtMS0xUzcsMC40NDcsNywxdjJIMi42NjdDMS4xOTQsMywwLDQuMTkzLDAsNS42NjZ2MjMuNjY3QzAsMzAuODA2LDEuMTk0LDMyLDIuNjY3LDMyaDI2LjY2NyAgICBDMzAuODA3LDMyLDMyLDMwLjgwNiwzMiwyOS4zMzNWNS42NjZDMzIsNC4xOTMsMzAuODA3LDMsMjkuMzM0LDN6IE0zMCwyOS4zMzNDMzAsMjkuNzAxLDI5LjcwMSwzMCwyOS4zMzQsMzBIMi42NjcgICAgQzIuMjk5LDMwLDIsMjkuNzAxLDIsMjkuMzMzVjUuNjY2QzIsNS4yOTksMi4yOTksNSwyLjY2Nyw1SDd2MmMwLDAuNTUzLDAuNDQ4LDEsMSwxczEtMC40NDcsMS0xVjVoNnYyYzAsMC41NTMsMC40NDgsMSwxLDEgICAgczEtMC40NDcsMS0xVjVoNnYyYzAsMC41NTMsMC40NDcsMSwxLDFzMS0wLjQ0NywxLTFWNWg0LjMzNEMyOS43MDEsNSwzMCw1LjI5OSwzMCw1LjY2NlYyOS4zMzN6IiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iNyIgeT0iMTIiIHdpZHRoPSI0IiBoZWlnaHQ9IjMiIGZpbGw9IiNEODAwMjciLz4KCQk8cmVjdCB4PSI3IiB5PSIxNyIgd2lkdGg9IjQiIGhlaWdodD0iMyIgZmlsbD0iI0Q4MDAyNyIvPgoJCTxyZWN0IHg9IjciIHk9IjIyIiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMTQiIHk9IjIyIiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMTQiIHk9IjE3IiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMTQiIHk9IjEyIiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMjEiIHk9IjIyIiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMjEiIHk9IjE3IiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMjEiIHk9IjEyIiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+Cgk8L2c+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==';
+
+  $('.calend').datepicker({      
+    buttonImage: pic,
+    buttonImageOnly: true,
+    buttonText: "Select date",
+    onSelect: function(d,i){if(d !== i.lastVal){$(this).change();}}
+  });
+    $('.calend').change( e => {
         if(e.target.name=='Till') this.search_till = e.target.value
         if(e.target.name=='From') this.search_from = e.target.value
     });
@@ -309,10 +320,46 @@ export default {
 }
 </script>
  
+<style>
+.panelContainerRow .ui-datepicker-trigger { top: -3px !important;  position: relative !important; margin-left: 2px !important; }
+#ui-datepicker-div {z-index: 222222 !important;}
+</style>
 
-<style scoped>
-.searchby,.searchby *{    cursor: pointer;}
-.whitesmoke *{color: whitesmoke !important;}
+<style scoped lang="scss">
+
+.searchby,.searchby *{cursor: pointer;} 
+lebel {color: white;}
+.panelContainer {
+  min-width: 900px;
+  background-color: #004673;
+  .panelContainerRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    &>div {
+      font-size: .8em;
+      color: white;
+      margin: 2px;
+    }
+    
+
+    .searchBy label {cursor: pointer;}
+    .defNature select {width: 138px !important; }
+    .authoritySel select {width: 80px !important; }
+    
+    .input_select {height: 23px;}
+    select.input_select {
+      border: #004673 solid 1px;
+      *{
+        background: #004673;
+        color: white;
+        border: 1px white solid;
+      }
+    }
+  }
+}
+
 @import './styles/styles_panel.css';
 /*@import '../node_modules/buefy/lib/buefy.min.css';*/
 </style>

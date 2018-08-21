@@ -8,7 +8,7 @@
               <div class="grow1">{{def[0].Photos}}</div>
             </div>  
               <template v-if="showModal">
-                <app-table-def-row-col-image v-show="def[0].Photos>0" :group="def[0].Group" :ind="ind" :data="data" :url="url" @click="showModal=!showModal" key="'k2'">  </app-table-def-row-col-image> 
+                <app-table-def-row-col-image v-show="def[0].Photos>0" :group="def[0].Group" :ind="ind" :data="data" :url="url" key="'k2'">  </app-table-def-row-col-image> 
                 <h1 v-show="def[0].Photos==0">No photos!</h1>
               </template>
           </div>

@@ -1,9 +1,7 @@
 .whitesmoke {color: whitesmoke !important;}
 
-.det.my_padding { padding-top: 20px;}
-.v-select.open {width: 150px !important;}
-
-.my_padding{  padding-top:5px}
+ .v-select.open {width: 150px !important;}
+ 
 .my_vue_table td { display: inline-block !important; } /*Меню в строчку!*/
 .input_select { height:27px } 
 

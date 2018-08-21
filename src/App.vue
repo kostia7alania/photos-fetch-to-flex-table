@@ -83,18 +83,17 @@ export default {
         } else console.log('unexpected datetype of data-prop in App->searchFromPanel(date)');
       },
       changeStatus(e, searchby = this.data.searchby){
-        if(searchby=='insp') { this.inspAttrs.status=e; if(e==2) this.inspections=[]; // чистим деф или инсп при ошибке;
-        }
-        if(searchby=='def') { this.defAttrs.status=e; if(e==2) this.defsTable=[];  // чистим деф или инсп при ошибке;
-        }
+        if(searchby=='insp') { this.inspAttrs.status=e; if(e==2) this.inspections=[];} // чистим деф или инсп при ошибке;
+        if(searchby=='def' ) { this.defAttrs .status=e; if(e==2) this.defsTable  =[];}  // чистим деф или инсп при ошибке;        
       },
       onclick_insps_search_photos () {  
         window.data=this.data;          console.log('onclick_insps_search_photos() => ', data);
         this.changeStatus(0); 
-        axios.post(`${this.url}`, qs.stringify(this.data)).then( res => this.searchHandler(res.data, this.data.searchby) );// searchby - передаю для параллельного поиска (до завершения запроса и началом его обработкой юзер может переключить режим insp/def;;;
+        let searchby = this.data.searchby; // searchby - передаю для параллельного поиска (до завершения запроса и началом его обработкой юзер может переключить режим insp/def;;;
+        axios.post(`${this.url}`, qs.stringify(this.data)).then( res => this.searchHandler(res.data, searchby) );
       },
-      insps_parse_tranform(w){
-            try{
+      insps_parse_tranform(w, searchby){
+            try {
               let e = w["@attributes"]; 
               e.Row = parseInt(e.Row);
               e.InspDateOfSubmit  = new Date(e.InspDateOfSubmit) .toLocaleDateString('ru-RU');
@@ -109,7 +108,7 @@ export default {
                   e.ShipFlagCode_Render_Title = dec.Name;}
               });
               return e;
-            }catch(e) {console.log('errooooorr==',e)}
+            } catch (e) { this.changeStatus(2, searchby); console.log('errooooorr==',e); } // error
       },
       searchHandler(dat, searchby = this.data.searchby) {
        console.log('searchHandler(dat)', dat, typeof dat, this)  
@@ -118,7 +117,7 @@ export default {
             this.inspAttrs.Found = parseInt(dat["@attributes"].Found);
             this.inspAttrs.Page  = parseInt(dat["@attributes"].Page);
             if(this.inspAttrs.Found==0){this.inspections = [];}
-            else this.inspections = this.inspAttrs.Found==1 ? [this.insps_parse_tranform( dat.Inspection )] : dat.Inspection.map( ee => this.insps_parse_tranform( ee ) )
+            else this.inspections = this.inspAttrs.Found==1 ? [this.insps_parse_tranform( dat.Inspection, searchby )] : dat.Inspection.map( ee => this.insps_parse_tranform( ee ) )
           } else {//def
             this.clonedDifData = this.data;
             this.defsTable = dat;
@@ -133,9 +132,20 @@ export default {
 </script>
  
 <style lang="scss">
+
 @import './styles/styles_table.scss';
 @mixin pnt(){ color: white; background: red; cursor: pointer; }
- 
+.table_vue,
+#menu{min-width: 900px} /*main menu of APCIS:) */
+#tabs {overflow: visible !important;} /* tabs of APCIS:)  */
+.row_head.table-head,
+.panelContainer {
+  position: sticky;
+  &.row_head{top: 50px;z-index: 221;}
+  &.panelContainer{top: 0px;z-index: 222;}
+}
+
+img.ui-datepicker-trigger {cursor:pointer;}
 .marg0{ margin: 0px; }
 .oddk {background-color: #24638a;
       &>*{color: white !important;};
@@ -146,6 +156,11 @@ export default {
   &:hover{@include pnt();} 
   &>*{color: white !important;};
 } 
+
+.oddk2  {    background: #00679870;cursor: pointer;border: 2px solid #00679870;}
+.evenk2 { background: #1f96d070; cursor:pointer; border: 2px solid #1f96d070 }
+.oddk3  { background: #0a9fcaa6; cursor:pointer }
+.evenk3 { background: #5cb85c9c; cursor:pointer }
 
 /* Анимации появления и исчезновения могут иметь */ 
 /* различные продолжительности и динамику.       */
