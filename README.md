@@ -5,6 +5,7 @@
 
 <h1>REPORTS:</h1>
 <img src="https://m.vk.com/doc40778210_473334723"> 
+<img src="https://vk.com/doc40778210_473334723"> 
 <br>
 <img src="https://pp.userapi.com/c830400/v830400915/185cf5/wJw_p-j2sQM.jpg">
 <br>
