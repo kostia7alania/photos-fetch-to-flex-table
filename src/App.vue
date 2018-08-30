@@ -16,16 +16,10 @@
 </template>
 
 <script>  
-  import 'viewerjs/dist/viewer.css'
-  import Viewer from 'v-viewer'
-  import Vue from 'vue'  
- const axios = require('axios');
- const qs = require('qs');
-
-Vue.use(Viewer);
-require('vue2-animate/dist/vue2-animate.min.css')
+ //const qs = require('qs');
 import Table from "./Table.vue";
-import Panel from "./Panel.vue";   
+import Panel from "./Panel.vue"; 
+import { downloadFile } from "./download_file.js";  
 export default {
     components: { 'app-table': Table, 'app-panel': Panel},
     props: ['url'], 
@@ -33,20 +27,21 @@ export default {
       return {
         showModal:    false,
         inspections:  [],
-        defsTable: [], //изменить!
-        decode:       [],
-        inspAttrs:    {Found:0,Page:0,status:-1},//-1 - indicates that we have not searched yet!; 0 - loading; 1 - ready; 2-err
+        defsTable:   [], //изменить!
+        decode:       {}, 
+        inspAttrs:    {Found:0,Page:0,status:-1, exportExcelStatus:1},//-1 - indicates that we have not searched yet!; 0 - loading; 1 - ready; 2-err
         defAttrs:     {Found:0,Page:0,status:-1},//-1 - indicates that we have not searched yet!; 0 - loading; 1 - ready; 2-err
         perPage:      25,
         clonedDifData: {},
         //clonedInspData: {},
         data:         {searchby:'insp', def_nature:0} //заполняется динамически;
+        
       }
     },
     computed: { },
     beforeMount(){console.log('before moiunt')},
     mounted() {
-      axios.post(this.url+"GetCodesAll=1")
+     this.axios.post(this.url+"GetCodesAll=1")
       .then(res=> { 
         let dec = res.data; window.decode = dec;
         if(typeof dec=='object') this.decode = dec;
@@ -73,13 +68,27 @@ export default {
           this.data = data;
           this.onclick_insps_search_photos();
         } else if(typeof data == 'string'){
-          if(data=='excel'){
 
-            axios.post('https://apcis.tmou.org/test/?action=getinspections_photos&searchby=insp', qs.stringify(this.data))
-            .then( res => { console.log(this, res); } )
-
+          if(data=='excel'){  
+            this.inspAttrs.exportExcelStatus=0; // loading
+            this.axios.post(`${this.url}excel=1`, Object.getOwnPropertyNames(this.data).map(e=>e+"="+this.data[e]).join('&') /*qs.stringify(this.data)*/)
+            .then( res => {
+              console.log(this, res);
+              if(res.headers["content-type"].match('excel')){
+                let file = res.data;
+                let filename = res.headers["filename"]?res.headers["filename"]:'Inspection photos report.xls';
+                let mimetype = res.headers["content-type"];
+                this.inspAttrs.exportExcelStatus=1;//ready
+                downloadFile(file, filename, mimetype);                
+              }
+              else { this.inspAttrs.exportExcelStatus=2; }//error
+            }).catch(e=>this.inspAttrs.exportExcelStatus=2)//error
           };
-          if(data=='stop'){ };
+
+          if(data=='stop'){ 
+            console.log('pressed STOP.!.')
+          };
+
         } else console.log('unexpected datetype of data-prop in App->searchFromPanel(date)');
       },
       changeStatus(e, searchby = this.data.searchby){
@@ -90,14 +99,15 @@ export default {
         window.data=this.data;          console.log('onclick_insps_search_photos() => ', data);
         this.changeStatus(0); 
         let searchby = this.data.searchby; // searchby - передаю для параллельного поиска (до завершения запроса и началом его обработкой юзер может переключить режим insp/def;;;
-        axios.post(`${this.url}`, qs.stringify(this.data)).then( res => this.searchHandler(res.data, searchby) );
+        this.axios.post(this.url, Object.getOwnPropertyNames(this.data).map(e=>e+"="+this.data[e]).join('&') /*qs.stringify(this.data)*/).then( res => this.searchHandler(res.data, searchby) );
       },
       insps_parse_tranform(w, searchby){
             try {
               let e = w["@attributes"]; 
               e.Row = parseInt(e.Row);
-              e.InspDateOfSubmit  = new Date(e.InspDateOfSubmit) .toLocaleDateString('ru-RU');
-              e.InspDateOfInspect = new Date(e.InspDateOfInspect).toLocaleDateString('ru-RU');
+              let toRuDate = w => new Date(w).toLocaleDateString('ru-RU');
+              e.InspDateOfSubmit  = toRuDate(e.InspDateOfSubmit);
+              e.InspDateOfInspect = toRuDate(e.InspDateOfInspect);
               this.decode.Ports.Port.forEach( dec => {dec = dec["@attributes"]; if (dec.Code == e.InspPort) e.Render_Place = dec.Name })
               this.decode.Flags.Flag.forEach( dec => {dec = dec["@attributes"];
                 if (dec.Code == e.InspAuthority) {

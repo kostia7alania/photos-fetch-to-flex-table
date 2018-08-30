@@ -8,20 +8,22 @@
               <label><input type="radio"  @change="upSendData" v-model.trim="searchby" name="coffee" value="def">Deficiency</label>
             </fieldset>
           </div>
-          <!--<div class="defNature" :key="'k2'" v-if="searchby=='def'">  
+         <!-- <div class="defNature" :key="'k2'" v-if="searchby=='def'">  
                 <label>Deficiency nature:</label>
                 <select  v-model="def_nature"  @change="upSendData" class="input_select"  style="width:130px;">
                   <option value="0" selected="selected">-- select --</option>  
-                  <option v-for="(def,ind) in def_nature_obj" :key="ind" :value="def.val">{{def.val>0 && def.val<100?`0${def.val}00`:`${def.val}00`}} - {{def.txt}}</option> 
+                  <option v-for="(def,ind) in def_nature_obj" :key="ind" :value="def.val">{{def.val | defValFilter}} - {{def.txt}}</option> 
                 </select> 
-          </div>-->
+          </div>
+          [ !!! --- filters: { defValFilter(e){return e > 0 && e < 100 ? `0${e}00`:`${e}00}}  ---<<< !!!! ]
+          -->
           <div class="searchFrom" :key="'k3'">
             <label>From:</label>
-            <input class="input_select calend" name="From"  v-model="search_from"  style="width: 60px;" v-mask="'##.##.####'"/>
+            <input class="input_select calend" name="From"  v-model="search_from" v-mask="'##.##.####'"/>
           </div>
           <div class="searchTill" :key="'k4'">
             <label>To:</label>
-            <input class="input_select calend" name="Till" v-model="search_till" style="width: 60px;"  v-mask="'##.##.####'"/>
+            <input class="input_select calend" name="Till" v-model="search_till" v-mask="'##.##.####'"/>
           </div>
 
           <div class="authoritySel" :key="'k5'">
@@ -31,7 +33,7 @@
               <option v-for="(auth,ind) in authorityAll" :key="ind" :value="auth.auth_val">{{auth.auth}}</option>
             </select> 
           </div>  
-          <div class="districtSel" v-if="searchby=='insp'" :key="'k6'" >
+          <div class="districtSel" :class="{width0: searchby!='insp'}" :key="'k6'" > <!--v-show="searchby=='insp'"-->
             <label>District:</label> 
             <select v-model="districtSel" class="input_select" name="district" style="width:110px;">
               <option value="0" selected="selected">-- select --</option>  
@@ -39,19 +41,27 @@
             </select> 
           </div>   
 <!--  old STYLE of input=> --> 
-        <div class="portSel" v-if="searchby=='insp'" :key="'k7'">
+        <!--<div class="portSel" v-if="searchby=='insp'" :key="'k7'">
           <label>Port:</label>  
           <select  class="input_select" name="port" v-model="portSel" @change="portSelHandler" style="width:110px;">
                 <option value="0" selected="selected">-- select --</option> 
                 <option v-for="(port,ind) in portAll" :key="ind" :class="port.port_class" :value="port.port_val">{{port.port}}</option>
           </select> 
-        </div>   
+        </div>   -->
 <!-- => new style: =>
           <td style="overflow: initial;"><label>Port:</label> 
             <v-select :placeholder="'-- select --'" :on-change="portSelHandler2" :searchable="true" :options="portAll" label="port"></v-select> 
           </td>  
 -->
-          <div class="typeSel" v-if=" searchby=='insp' " :key="'k8'">
+          <div class="portSel" :class="{width0: searchby!='insp'}" :key="'k7'"> <!--v-show="searchby=='insp'"--> 
+            <label>Port:</label> 
+            <select v-model="portSel" @change="portSelHandler" class="input_select" name="port" style="width:110px;">
+               <option value="0" selected="selected">-- select --</option> 
+                <option v-for="(port,ind) in portAll" :key="ind" :class="port.port_class" :value="port.port_val">{{port.port}}</option>
+            </select>
+          </div> 
+
+          <div class="typeSel" :class="{width0: searchby!='insp'}" :key="'k8'"> <!--v-show="searchby=='insp'"--> 
             <label>Type:</label> 
             <select v-model="typeSel" class="input_select" style="width:50px;">
               <option v-for="(typ,ind) in typeAll" :key="ind" :value="typ.val">{{typ.type}}</option>
@@ -64,15 +74,15 @@
             </select>
           </div> 
            
-          <div class="detentionSel" :key="'k10'" v-if="searchby=='insp'">
+          <div class="detentionSel" :key="'k10'" :class="{width0: searchby!='insp'}"> <!--v-show="searchby=='insp'"--> 
             <input type="checkbox" v-model="detentionSel" id="detentionSel" >
             <label for="detentionSel">Detention</label> 
           </div> 
            
           <div class="searchBtn" :key="'k11'">
-            <button class="button is-warning" @click="searchFromPanel('search')"> {{searchBtnText}}</button>
-            <button class="button is-warning" @click="searchFromPanel('cancel')" title="Cancel request">  Stop</button>
-            <button class="button is-warning" @click="searchFromPanel('excel')" title="Export to Excel"> To Excel</button>
+            <button v-show="searchBtnText=='Search'" @click="searchFromPanel('search')"><img :src="'./js/photos_libs/search.png'"> {{searchBtnText}}</button> <!--так не апдейтит вовремя .!. -->
+            <button v-show="searchBtnText=='Stop'" @click="searchFromPanel('cancel')" title="Cancel request"><img :src="'./js/photos_libs/stop.png'"> Stop</button>
+            <button v-show="searchby=='insp'" @click="searchFromPanel('excel')" title="Export to Excel"> <img :src="'./js/photos_libs/excel.svg'"> {{excelBtnText}}</button> 
           </div> 
            
     </transition-group> 
@@ -81,13 +91,21 @@
 <script> 
 //import vSelect from 'vue-select'; 
 export default {
-  props: ['url', 'decode','Page','perPage', 'inspAttrs', 'defAttrs'],
+  name: 'app-table',
+  props: {
+    url:      {type: String,                default: '',required: true},
+    decode:   {type: Object,                 default: [],required: false},
+    Page:     {type: [String, Number],      default: 0, required: false},
+    perPage:  {type: [String, Number],      default: 25,required: false},
+    inspAttrs:{type: [Array,Object],        default: {},required: false},
+    defAttrs: {type: [Array,Object],        default: {},required: false},
+  },
   components: { /*'v-select': vSelect */},
   data() {
-    return {  
-            searchby: 'insp',
-            districtSel:0,
-            authoritySel:0,
+    return {
+          searchby: 'insp',
+          districtSel:0,
+          authoritySel:0,
           radio: 'default',
           detentionSel: false,
           portAll:[],
@@ -120,9 +138,7 @@ export default {
         "held":         this.heldSel,
         "detention":    this.detentionSel?1:0,
         "Page":         0,//с кнопки - всегда с первой страницы начинаем;)
-        "perPage":      this.perPage,
-        "ports_temp":   0,
-        "district_temp":1,
+        "perPage":      this.perPage, 
         "excel"        :excel,
         "searchby"     :this.searchby,
         "def_nature"   :this.def_nature
@@ -262,15 +278,15 @@ export default {
   watch: {
     decode: function (e) { this.authSelHandler(); console.log('декод -',e); }
   },
-  mounted: function () {
+  mounted: function () { 
     this.search_from = `${	String(new Date().getDate()).length==1?0+""+new Date().getDate():new Date().getDate()}.${	String  (new Date().getMonth()).length==1?0+""+new Date().getMonth():new Date().getMonth()}.${new Date().getFullYear()}`;
     this.search_till = `${	String(new Date().getDate()).length==1?0+""+new Date().getDate():new Date().getDate()}.${	String( (new Date().getMonth()+1) ).length==1?0+""+(new Date().getMonth()+1):new Date().getMonth()+1}.${new Date().getFullYear()}`;;
     //$('.calend').each( function ( ) { $(this).datepicker() })/*$('#getinspections button').button( )*/
   //  $('.calend').datepicker({onSelect: function(d,i){if(d !== i.lastVal){$(this).change();}}  });
-  var pic = 'data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTguMS4xLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDMyIDMyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAzMiAzMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSIyNHB4IiBoZWlnaHQ9IjI0cHgiPgo8Zz4KCTxnIGlkPSJjYWxlbmRhcl8xXyI+CgkJPHBhdGggZD0iTTI5LjMzNCwzSDI1VjFjMC0wLjU1My0wLjQ0Ny0xLTEtMXMtMSwwLjQ0Ny0xLDF2MmgtNlYxYzAtMC41NTMtMC40NDgtMS0xLTFzLTEsMC40NDctMSwxdjJIOVYxICAgIGMwLTAuNTUzLTAuNDQ4LTEtMS0xUzcsMC40NDcsNywxdjJIMi42NjdDMS4xOTQsMywwLDQuMTkzLDAsNS42NjZ2MjMuNjY3QzAsMzAuODA2LDEuMTk0LDMyLDIuNjY3LDMyaDI2LjY2NyAgICBDMzAuODA3LDMyLDMyLDMwLjgwNiwzMiwyOS4zMzNWNS42NjZDMzIsNC4xOTMsMzAuODA3LDMsMjkuMzM0LDN6IE0zMCwyOS4zMzNDMzAsMjkuNzAxLDI5LjcwMSwzMCwyOS4zMzQsMzBIMi42NjcgICAgQzIuMjk5LDMwLDIsMjkuNzAxLDIsMjkuMzMzVjUuNjY2QzIsNS4yOTksMi4yOTksNSwyLjY2Nyw1SDd2MmMwLDAuNTUzLDAuNDQ4LDEsMSwxczEtMC40NDcsMS0xVjVoNnYyYzAsMC41NTMsMC40NDgsMSwxLDEgICAgczEtMC40NDcsMS0xVjVoNnYyYzAsMC41NTMsMC40NDcsMSwxLDFzMS0wLjQ0NywxLTFWNWg0LjMzNEMyOS43MDEsNSwzMCw1LjI5OSwzMCw1LjY2NlYyOS4zMzN6IiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iNyIgeT0iMTIiIHdpZHRoPSI0IiBoZWlnaHQ9IjMiIGZpbGw9IiNEODAwMjciLz4KCQk8cmVjdCB4PSI3IiB5PSIxNyIgd2lkdGg9IjQiIGhlaWdodD0iMyIgZmlsbD0iI0Q4MDAyNyIvPgoJCTxyZWN0IHg9IjciIHk9IjIyIiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMTQiIHk9IjIyIiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMTQiIHk9IjE3IiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMTQiIHk9IjEyIiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMjEiIHk9IjIyIiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMjEiIHk9IjE3IiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+CgkJPHJlY3QgeD0iMjEiIHk9IjEyIiB3aWR0aD0iNCIgaGVpZ2h0PSIzIiBmaWxsPSIjRDgwMDI3Ii8+Cgk8L2c+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==';
-
-  $('.calend').datepicker({      
-    buttonImage: pic,
+  
+  $('.calend').datepicker({
+    showAnim: "blind",
+    buttonImage: './js/photos_libs/calendar.png',
     buttonImageOnly: true,
     buttonText: "Select date",
     onSelect: function(d,i){if(d !== i.lastVal){$(this).change();}}
@@ -280,7 +296,10 @@ export default {
         if(e.target.name=='From') this.search_from = e.target.value
     });
   },
-  computed: {
+  computed: { 
+    excelBtnText: function(){
+      return this.searchby=='insp' &&  this.inspAttrs.exportExcelText == 0 ? 'Loading': 'To Excel';
+    },
     searchBtnText: function(){
       return this.searchby=='insp' && this.inspAttrs.status==0 ||
              this.searchby=='def'  && this.defAttrs.status ==0 ? 'Stop' : 'Search';
@@ -320,15 +339,22 @@ export default {
 }
 </script>
  
-<style>
-.panelContainerRow .ui-datepicker-trigger { top: -3px !important;  position: relative !important; margin-left: 2px !important; }
+<style lang="scss">
+.width0{width:0px; display: none;} 
 #ui-datepicker-div {z-index: 222222 !important;}
+.panelContainerRow img.ui-datepicker-trigger {    width: 26px;
+  top: -3px !important;  
+  position: relative !important;
+  margin-left: 2px !important;
+  transition: 2s;
+  &:hover {
+    background: #cd0a0a66;
+    box-shadow: -1px -1px 12px 9px rgba(0,0,0,0.5);
+  }
+}
 </style>
 
 <style scoped lang="scss">
-
-.searchby,.searchby *{cursor: pointer;} 
-lebel {color: white;}
 .panelContainer {
   min-width: 900px;
   background-color: #004673;
@@ -336,32 +362,94 @@ lebel {color: white;}
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between; 
+    *{transition: .4s;}
     &>div {
       font-size: .8em;
       color: white;
       margin: 2px;
     }
-    
-
-    .searchBy label {cursor: pointer;}
+    lebel {color: white;}
+    .searchTill input, .searchFrom input  {width: 60px  !important; padding-left:3px;} 
     .defNature select {width: 138px !important; }
     .authoritySel select {width: 80px !important; }
-    
+    .searchBy label,.searchBy label *, .detentionSel * {cursor: pointer;}
     .input_select {height: 23px;}
-    select.input_select {
-      border: #004673 solid 1px;
+    .detentionSel {display: flex;padding-top: 13px; input {margin-top: 2px !important;}}
+    .searchBtn{ display: flex; flex-direction: column}
+    .searchBtn img {
+      width: 15px;
+      margin: 1px 2px 0 0;
+    }
+    select.input_select { 
+      cursor: pointer;
+      border-radius: 5px;
       *{
         background: #004673;
         color: white;
         border: 1px white solid;
       }
     }
+    &.panelContainerRow input { border-radius: 5px; }
   }
 }
 
 @import './styles/styles_panel.css';
 /*@import '../node_modules/buefy/lib/buefy.min.css';*/
+
+
+/* стилизация чекера ====» 
+*/ 
+.detentionSel {
+input[type="checkbox"]:checked + label::after { 
+content: ''; 
+position: absolute; 
+width: 1.2ex; 
+height: 0.4ex; 
+background: rgba(0, 0, 0, 0); 
+top: 0.9ex; 
+left: 0.4ex; 
+border: 3px solid #11b912; 
+border-top: none; 
+border-right: none; 
+-webkit-transform: rotate(-45deg); 
+-moz-transform: rotate(-45deg); 
+-o-transform: rotate(-45deg); 
+-ms-transform: rotate(-45deg); 
+transform: rotate(-45deg); 
+} 
+
+input[type="checkbox"] { 
+line-height: 2.1ex; 
+} 
+
+input[type="radio"], 
+input[type="checkbox"] { 
+position: absolute; 
+left: -999em; 
+} 
+
+input[type="checkbox"] + label { 
+position: relative; 
+overflow: hidden; 
+cursor: pointer; 
+} 
+
+input[type="checkbox"] + label::before { 
+content: ""; 
+display: inline-block; 
+vertical-align: -25%; 
+height: 2ex; 
+width: 2ex; 
+background-color: white; 
+border: 1px solid rgb(166, 166, 166); 
+border-radius: 4px; 
+box-shadow: inset 0 2px 5px rgba(0,0,0,0.25); 
+margin-right: 0.5em; 
+}
+
+} 
+/*<=== стилизация чекера */
 </style>
 
  

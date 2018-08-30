@@ -34,8 +34,7 @@
 
 <script>     
 
-export default {  
-  components: {     },
+export default {   
   props:['item','decode'],
   data(){ return {  } },
   methods:  {   

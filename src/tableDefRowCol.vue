@@ -2,9 +2,9 @@
           <div>
             <div class="row_head" :class="{oddk:ind%2, evenk:!(ind%2)}" @click="showModal=!showModal" key="'k1'" >
               <div class="grow0">{{ind+1}}</div>
-              <div class="grow2">{{ codeGroupViewHandler( def[0].Group ) }}</div>
+              <div class="grow1">{{ codeGroupViewHandler( def[0].Group ) }}</div>
               <div class="grow3">{{def[0].Name}}</div>
-              <div class="grow1">{{def[0].Defs}}</div>
+              <div class="grow2">{{def[0].Defs}}</div>
               <div class="grow1">{{def[0].Photos}}</div>
             </div>  
               <template v-if="showModal">

@@ -109,4 +109,8 @@ export default {
 
 </script>
 
- 
+
+<style lang="scss" scoped>
+ul.navigate{padding-top:3px;}
+</style>
+

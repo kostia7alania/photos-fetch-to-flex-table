@@ -25,7 +25,6 @@ export default {
     methods:{
     perPageEmit(e){this.$emit('perPageEmit',e)},
     navClick(e){   this.$emit('navClick',   e)}
-  },
-  mounted: function () {}
+  } 
 }
 </script> 

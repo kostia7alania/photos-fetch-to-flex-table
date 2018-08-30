@@ -2,16 +2,17 @@
     <div>        
               <div class="row_head table-head">
                 <div class="grow0">#</div>
-                <div class="grow2">Date of Inspection</div>
-                <div class="grow2">Submitted</div>
+                <div class="grow1">Date of Inspection</div>
+                <div class="grow1">Submitted</div>
                 <div class="grow2">Place</div>
-                <div class="grow2">IMO number</div>
+                <div class="grow1">IMO number</div>
                 <div class="grow3">Ship Name</div>
-                <div class="grow2">Callsign</div>
-                <div class="grow2">MMSI</div>
-                <div class="grow2">Flag</div>
-                <div class="grow2">Deficiencies</div>
-                <div class="grow2">Detention</div>
+                <div class="grow1">Callsign</div>
+                <div class="grow1">MMSI</div>
+                <div class="grow1">Flag</div>
+                <div class="grow1">Deficiencies</div>
+                <div class="grow1">Photos</div>
+                <div class="grow1">Detention</div>
               </div>
               <div v-for="(insp,ind) in orderedInspections" v-bind:key="ind">
                 <app-table-insp-row-col :insp="insp" :ind="ind" :decode="decode" :url="url" :Page='Page' :perPage='perPage'></app-table-insp-row-col>

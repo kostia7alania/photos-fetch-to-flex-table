@@ -3,9 +3,10 @@
   & img {
     padding-bottom: 7px;
     padding-top: 7px;
+    -webkit-transition: all 1s ease-out;
     -moz-transition: all 1s ease-out;
     -o-transition: all 1s ease-out;
-    -webkit-transition: all 1s ease-out;
+    transition: all 1s ease-out;
     height: 222px;
     width: 222px;
     &:hover { 
@@ -13,6 +14,7 @@
       -webkit-transform: scale(1.1);
       -moz-transform: scale(1.1);
       -o-transform: scale(1.1);
+      transform: scale(1.1);
     }
   }
 }
@@ -58,7 +60,7 @@
   &:hover {cursor: unset;}
   &>.viewer-insp-row {
     margin: 1px;
-    width: 333px; 
+    width: 300px; 
       @include imgs();  
    }
 }
@@ -77,6 +79,7 @@
   flex-direction: column;
   align-items: center;
   .tbl-imgs {
+    width: 300px;
     text-align: center;
     padding-bottom: 15px;
   }
@@ -84,13 +87,13 @@
 
 
 
-.grow0 {flex-grow: 0;     max-width: 30px;}
-.grow1 {flex-grow: 1}
+.grow0 {flex-grow: 0;   max-width: 30px;}
+.grow1 {flex-grow: 1;   max-width: 77px;}
  .grow2 {flex-grow: 2}
  .grow3 {flex-grow: 3}
  .grow4 {flex-grow: 4}
  .grow5 {flex-grow: 5}
-
+ .tbl-imgs-wrapper>.tbl-imgs:nth-child(1){display: flex; flex-direction: column; align-items: center;}
  .row_head {
   @include flx();
   flex-direction: row;

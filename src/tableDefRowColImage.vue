@@ -1,15 +1,16 @@
 <template>
   <div class="  color_white bg-darkblue">
-        <transition-group> 
+        <transition-group name="modal"> 
           <div v-if="status==1" :key="'def_row'">
             <div class="row_head table-head table-def-row-col-head center"> 
+                <div class="grow1">Code</div>
+                <div class="grow3">Nature</div>
                 <div class="grow1">Submitted</div>
                 <div class="grow1">Date of Inspect</div>
-                <div class="grow1">Place</div>
+                <div class="grow2">Place</div>
                 <div class="grow1">IMO Number</div>
-                <div class="grow1">Ship Name</div>
-                <div class="grow1">Ship Flag</div>
-                <div class="grow3">Remarks</div>
+                <div class="grow2">Ship Name</div>
+                <div class="grow2">Ship Flag</div> 
                 <div class="grow2">Photo</div>
             </div>
             <app-table-def-row-col-image-row  v-for="(file, i) in def" :file="file" :key="i" :i="i" :file2="file"></app-table-def-row-col-image-row>
@@ -22,10 +23,9 @@
 </template>
 
 <script>    
-const axios = require('axios');
-const qs = require('qs'); 
-import tableDefRowColImageRow from "./tableDefRowColImageRow.vue";  
- 
+//const qs = require('qs');
+import tableDefRowColImageRow from "./tableDefRowColImageRow.vue";
+
 export default {
    components: {'app-table-def-row-col-image-row': tableDefRowColImageRow},
   props: ['group', 'ind', 'data' , 'url', /*'decode', 'deficiencies'*/],
@@ -37,12 +37,13 @@ export default {
   }},
   mounted() {
     this.status = 0; // loading
-    axios.post(`${this.url}group=${this.group}`, qs.stringify(this.data))
+    this.axios.post(`${this.url}group=${this.group}`, Object.getOwnPropertyNames(this.data).map(e=>e+"="+this.data[e]).join('&') /*qs.stringify(this.data)*/ )
     .then( res => {
       window.res = res;
       let record = res.data[0][0].Record;        
       let ddd = Object.getOwnPropertyNames(record).includes("@attributes")?[record['@attributes']] : record.map(e=>e["@attributes"]);
-          ddd = _.groupBy(ddd, e => e.InspUID)
+         // ddd = _.groupBy(ddd, e => e.InspUID)
+          ddd = _.groupBy(ddd, e => e.FullNatureCode)
         this.def = Object.getOwnPropertyNames(ddd).map(e=>ddd[e])
         window.def = this.def;
         this.status = 1; // success
