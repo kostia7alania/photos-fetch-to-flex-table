@@ -4,6 +4,7 @@
  В коммите improvments  содержится:  26 files changed, 1210 insertions(+), 3791 deletions(-)
 
 <h1>REPORTS:</h1>
+<a href="https://vk.com/doc40778210_473334723" target="_blank"> ! Анимация! </a><br>
 <img src="https://m.vk.com/doc40778210_473334723"> 
 <img src="https://vk.com/doc40778210_473334723"> 
 <br>
