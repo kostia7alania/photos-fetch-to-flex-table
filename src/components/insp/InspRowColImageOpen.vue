@@ -2,9 +2,9 @@
             <div class="tbl-imgs-wrapper color_white">
               <div class="tbl-imgs">
                 <img  :data-original="'https://apcis.tmou.org/pictures/real/'+item.FileName"
-                      :alt="`<div> 
+                      :alt="`<div>
                               <b>Date of inspect:</b> ${item.DateOfInspect}
-                              ${item.PSCOName!=undefined?'<p><b>PSCO Name:</b> '+item.PSCOName+'</p>':''} 
+                              ${item.PSCOName!=undefined?'<p><b>PSCO Name:</b> '+item.PSCOName+'</p>':''}
                               `+//${authCodeComp(item.AuthCode)!=''?'<p><b>Authority:</b> '+ authCodeComp(item.AuthCode) +'</p>':''}
                               `
                               ${item.Remarks!=undefined?'<p><b>Remarks:</b> '+item.Remarks+'</p>':''}
@@ -19,7 +19,7 @@
                     :src="'https://apcis.tmou.org/pictures/small/'+item.FileName"
                     data-color="#eee"
                     data-text="Small quality image"
-                    style="max-width: 100%" 
+                    style="max-width: 100%"
                 />
             </div>
             <div class="tbl-imgs">
@@ -28,23 +28,31 @@
              <!-- <p v-if="item.Authority!=undefined" ><b>Authority</b> {{item.Authority}}</p>
                <p v-if="authCodeComp(item.AuthCode)!=''" ><b>Authority</b> {{ authCodeComp(item.AuthCode) }}</p> -->
               <p v-if="item.Remarks!=undefined" ><b>Remarks</b> {{item.Remarks}}</p>
-            </div> 
-        </div>  
+            </div>
+        </div>
 </template>
 
-<script>     
-
-export default {   
-  props:['item','decode'],
-  data(){ return {  } },
-  methods:  {   
-    authCodeComp(AuthCode) { 
-      let a = this.decode.Authorities.Authority.filter(e=>e["@attributes"].MOU=='TMOU' && e["@attributes"].ID==AuthCode?1:0); //берем из кода Authority - его имя;
-      return a.length>0 ? a["0"]["@attributes"].Name: '' ; 
-    } 
+<script>
+export default {
+  props: ["item"],
+  data() {
+    return {};
   },
-  computed: { },
-  mounted: function () { }
-}
-</script> 
- 
+  methods: {
+    authCodeComp(AuthCode) {
+      let a = this.decode.Authorities.Authority.filter(e =>
+        e["@attributes"].MOU == "TMOU" && e["@attributes"].ID == AuthCode
+          ? 1
+          : 0
+      ); //берем из кода Authority - его имя;
+      return a.length > 0 ? a["0"]["@attributes"].Name : "";
+    }
+  },
+  computed: {
+    CODES_ALL() {
+      return this.$store.state.CODES_ALL;
+    }
+  },
+  mounted: function() {}
+};
+</script>

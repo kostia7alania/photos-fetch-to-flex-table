@@ -1,31 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>Fast creating of VUE COMPONENTS</title>
 
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+    <!--Polyfill.io reads the User-Agent header of each request and returns polyfills that are suitable for the requesting browser-->
+    <link href="//unpkg.com/viewerjs/dist/viewer.css" rel="stylesheet" />
+    <script src="//unpkg.com/vue/dist/vue.js"></script>
+    <script src="//unpkg.com/viewerjs/dist/viewer.js"></script>
+    <script src="//unpkg.com/v-viewer/dist/v-viewer.js"></script>
+    <script src="//unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- УЙТИ ОТ JQUERY!-->
+    <script></script>
 
-      <!-- Bootstrap core CSS -->
-      <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" media="screen">
- 
-      <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-      <!--[if lt IE 9]>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.js"></script>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
-      <![endif]-->
+    <link
+      rel="stylesheet"
+      href="https://apcis.tmou.org/css/jquery.arcticmodal-0.3.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://apcis.tmou.org/css/redmond/jquery-ui-1.8.16.custom.css"
+    />
+    <!--    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+    <link
+      href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css"
+      rel="stylesheet"
+      media="screen"
+    />-->
+
+    <script src="https://apcis.tmou.org/js/jquery-1.6.2.min.js"></script>
+    <script src="https://apcis.tmou.org/js/jquery.blockui.js"></script>
+    <script src="https://apcis.tmou.org/js/jquery-ui-1.8.16.custom.min.js"></script>
+    <script src="https://apcis.tmou.org/js/jquery.arcticmodal-0.3.min.js"></script>
   </head>
   <body>
+    <div id="app1"></div>
 
-    <div id="app1"></div> 
-
-
-        <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-        <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    
-        <script>window.props = {  selector: '#app1', url: 'https://apcis.tmou.org/test?action=getinspections_photos&', rowsperpage: 25  }; </script>        
-        <script src="/dist/build.js"></script>
-
+    <script>
+      window.props = {
+        selector: "#app1",
+        url:
+          (window.location.href.match("localhost") && "./api?api&") ||
+          "https://apcis.tmou.org/APCIS-K?api&",
+        rowsperpage: 25
+      };
+    </script>
+    <script src="/dist/build.js"></script>
   </body>
 </html>

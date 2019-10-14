@@ -1,4 +1,4 @@
-<template>   
+<template>
           <div>
             <div class="row_head" :class="{oddk:ind%2, evenk:!(ind%2)}" @click="showModal=!showModal" key="'k1'" >
               <div class="grow0">{{ind+1}}</div>
@@ -6,9 +6,13 @@
               <div class="grow3">{{def[0].Name}}</div>
               <div class="grow2">{{def[0].Defs}}</div>
               <div class="grow1">{{def[0].Photos}}</div>
-            </div>  
+            </div>
               <template v-if="showModal">
-                <app-table-def-row-col-image v-show="def[0].Photos>0" :group="def[0].Group" :ind="ind" :data="data" :url="url" key="'k2'">  </app-table-def-row-col-image> 
+                <def-row-col-image
+                  v-show="def[0].Photos>0"
+                  :group="def[0].Group"
+                  :ind="ind"
+                />
                 <h1 v-show="def[0].Photos==0">No photos!</h1>
               </template>
           </div>
@@ -16,18 +20,17 @@
 </template>
 
 <script>
-import tableDefRowColImage from "./tableDefRowColImage.vue";  
 export default {
-  components: { 'app-table-def-row-col-image': tableDefRowColImage },
-  props: ['data', 'def', 'ind', 'url'/*, 'decode', 'deficiencies'*/],
-  watch: { },
-  data(){ return { showModal: false } },
-  methods:{
-    codeGroupViewHandler: e => e>0 && e<100?`0${e}00`:`${e}00`
+  components: {
+    "def-row-col-image": () => import("./DefRowColImage.vue")
   },
-  mounted: function () {},
-  computed: { }
-}
-</script> 
- 
- 
+  props: ["def", "ind"],
+  data() {
+    return { showModal: false };
+  },
+  methods: {
+    codeGroupViewHandler: e => (e > 0 && e < 100 ? `0${e}00` : `${e}00`)
+  }
+};
+</script>
+
